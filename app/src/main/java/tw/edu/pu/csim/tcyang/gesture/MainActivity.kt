@@ -1,5 +1,6 @@
 package tw.edu.pu.csim.tcyang.gesture
 
+import android.graphics.Rect
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,12 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import tw.edu.pu.csim.tcyang.gesture.ui.theme.GestureTheme
 import kotlin.math.roundToInt
@@ -148,7 +149,25 @@ fun Drag() {
     var offset2 by remember { mutableStateOf(Offset(500f,500f)) }
     var height by remember { mutableStateOf(0) }
     var width by remember { mutableStateOf(0) }
+
     Box(modifier = Modifier.fillMaxSize()){
+
+        Box(modifier = Modifier
+            .align(Alignment.TopEnd)
+        ){
+            var r1: Rect = Rect(offset1.x.toInt(), offset1.y.toInt(),
+                offset1.x.toInt()+width, offset1.y.toInt()+height)
+            var r2: Rect = Rect(offset2.x.toInt(), offset2.y.toInt(),
+                offset2.x.toInt()+width, offset2.y.toInt()+height)
+
+            if(r1.intersect(r2)) {
+                Text(text = "碰撞")
+            }
+            else{
+                Text(text = "")
+            }
+        }
+
         Box(modifier = Modifier
             .onGloballyPositioned { coordinates ->
                 height = coordinates.size.height
@@ -166,20 +185,20 @@ fun Drag() {
                 contentDescription = "精靈1",
             )
         }
-    }
 
-    Box(modifier = Modifier
-        .offset { IntOffset(offset2.x.roundToInt(), offset2.y.roundToInt()) }
-        .pointerInput(Unit) {
-            detectDragGestures { change, dragAmount ->
-                offset2 += dragAmount
+        Box(modifier = Modifier
+            .offset { IntOffset(offset2.x.roundToInt(), offset2.y.roundToInt()) }
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    offset2 += dragAmount
+                }
             }
+        ){
+            Image(
+                painter = painterResource(id = R.drawable.ghost2),
+                contentDescription = "精靈2",
+            )
         }
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.ghost2),
-            contentDescription = "精靈2",
-        )
-    }
 
+    }
 }
