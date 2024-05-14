@@ -46,12 +46,16 @@ fun Tap() {
     var msg by remember { mutableStateOf("TAP相關手勢實例") }
     var offset1 by remember { mutableStateOf(Offset.Zero) }
     var offset2 by remember { mutableStateOf(Offset.Zero) }
+    var PU = arrayListOf(R.drawable.pu0, R.drawable.pu1,
+        R.drawable.pu2, R.drawable.pu3,
+        R.drawable.pu4, R.drawable.pu5)
+    var Number by remember { mutableStateOf(0) }
 
     Column {
         Text(text = msg)
 
         Image(
-            painter = painterResource(id = R.drawable.pu0),
+            painter = painterResource(id = PU[Number]),
             contentDescription = "靜宜之美",
             modifier = Modifier
                 .fillMaxSize()
@@ -72,7 +76,19 @@ fun Tap() {
                         onDragStart = {
                             offset1 = it
                             offset2 = it },
-                        onDragEnd = {msg="從" + offset1.toString() + "拖曳到" + offset2.toString()}
+                        onDragEnd = {
+                            if (offset2.x >= offset1.x){
+                                msg = "長按後向右拖曳"
+                                Number ++
+                                if (Number>5){Number=0}
+                            }
+                            else{
+                                msg = "長按後向左拖曳"
+                                Number --
+                                if (Number<0){Number=5}
+                            }
+
+                        }
 
                     )
                 }
